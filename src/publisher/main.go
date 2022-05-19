@@ -49,6 +49,22 @@ func main() {
 		}
 	}()
 
+	offer, err := peerConnection.CreateOffer(&webrtc.OfferOptions{
+		OfferAnswerOptions: webrtc.OfferAnswerOptions{
+			VoiceActivityDetection: true,
+		},
+		ICERestart: false,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("offer:", offer)
+
+	peerConnection.SetLocalDescription(offer)
+
+	fmt.Println("local description:", peerConnection.CurrentLocalDescription())
+	fmt.Println("remote description:", peerConnection.RemoteDescription())
+
 	peerConnection.OnICEConnectionStateChange(func(is webrtc.ICEConnectionState) {
 		fmt.Printf("Connection State has changed %s \n", is.String())
 
@@ -59,4 +75,16 @@ func main() {
 		}
 	})
 
+	peerConnection.OnICECandidate(func(i *webrtc.ICECandidate) {
+		if i == nil {
+			return
+		}
+
+		remoteDescription := peerConnection.RemoteDescription()
+		if remoteDescription == nil {
+
+		}
+	})
+
+	select {}
 }
