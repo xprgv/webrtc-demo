@@ -77,6 +77,7 @@ func main() { //nolint:gocognit
 		if c == nil {
 			return
 		}
+		fmt.Println("ice candidate:", c)
 
 		candidatesMux.Lock()
 		defer candidatesMux.Unlock()
@@ -97,6 +98,7 @@ func main() { //nolint:gocognit
 		if candidateErr != nil {
 			panic(candidateErr)
 		}
+		fmt.Println("add ice candidate:", string(candidate))
 		if candidateErr := peerConnection.AddICECandidate(webrtc.ICECandidateInit{Candidate: string(candidate)}); candidateErr != nil {
 			panic(candidateErr)
 		}
@@ -185,10 +187,11 @@ func main() { //nolint:gocognit
 	// })
 
 	// Create an offer to send to the other process
-	offer, err := peerConnection.CreateOffer(nil)
+	offer, err := peerConnection.CreateOffer(&webrtc.OfferOptions{})
 	if err != nil {
 		panic(err)
 	}
+	// fmt.Println(offer)
 
 	// Sets the LocalDescription, and starts our UDP listeners
 	// Note: this will start the gathering of ICE candidates

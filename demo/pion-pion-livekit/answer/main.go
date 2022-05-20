@@ -21,6 +21,8 @@ import (
 )
 
 func signalCandidate(addr string, c *webrtc.ICECandidate) error {
+	fmt.Println(c)
+
 	payload := []byte(c.ToJSON().Candidate)
 	resp, err := http.Post(fmt.Sprintf("http://%s/candidate", addr), // nolint:noctx
 		"application/json; charset=utf-8", bytes.NewReader(payload))
@@ -108,6 +110,7 @@ func main() { // nolint:gocognit
 			panic(err)
 		}
 
+		// fmt.Println(sdp)
 		if err := peerConnection.SetRemoteDescription(sdp); err != nil {
 			panic(err)
 		}
@@ -117,6 +120,7 @@ func main() { // nolint:gocognit
 		if err != nil {
 			panic(err)
 		}
+		// fmt.Println(answer)
 
 		// Send our answer to the HTTP server listening in the other process
 		payload, err := json.Marshal(answer)
